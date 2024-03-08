@@ -1,0 +1,99 @@
+[system]
+domain = "chargpile"
+version = "1.0"
+env = "dev"
+HttpPort = ":8080"
+Host = "localhost"
+UploadModel = "local"
+
+[mysql]
+dialect = "mysql"
+dbHost = "localhost"
+dbPort = "3317"
+userName = "root"
+password = "ranx"
+dbName = "charg_piles"
+charset = "utf8mb4"
+#[service]
+#AppMode = debug
+#HttpPort = :3000
+#
+#[redis]
+#RedisDb = redis
+#RedisAddr = localhost:6379
+#RedisPw =
+#RedisDbName = 2
+
+#[mysql]
+#Db = mysql
+#DbHost = localhost
+#DbPort = 3317
+#DbUser = root
+#DbPassWord = ranx
+#DbName = charg_piles
+
+
+#[mysql.default]
+#dialect = "mysql"
+#dbHost = "127.0.0.1"
+#dbPort = "3306"
+#dbName = "mall_db"
+#userName = "mall"
+#password = "123456"
+#charset = "utf8mb4"
+#
+#[kafka.default]
+#debug = true
+#address = "localhost:9092"
+#requiredAck = -1
+#readTimeout = 30
+#writeTimeout = 30
+#maxOpenRequests = 5
+#partition = 2
+#
+#[redis]
+#redisDbName = 4
+#redisHost = "127.0.0.1"
+#redisPort = 6379
+#redisPassword = "123456"
+#redisNetwork = "tcp"
+#
+#[cache]
+#cacheType = "redis"
+#cacheEmpires = 600
+#cacheWarmUp = ""
+#cacheServer = ""
+#
+#[email]
+#address = "http://localhost:8080/#/vaild/email/"
+#smtpHost = ""
+#smtpEmail = ""
+#smtpPass = ""
+#
+#[encryptSecret]
+#jwtSecret = "FanOne666Secret"
+#emailSecret = "EmailSecret"
+#phoneSecret = "PhoneSecret"
+#
+#[oss]
+#AccessKeyId = ""
+#AccessKeySecret = ""
+#BucketName = ""
+#QiNiuServer = ""
+#
+[photoPath]
+photoHost = "http://127.0.0.1"
+ProductPath = "/static/imgs/product/"
+AvatarPath = "/static/imgs/avatar/"
+#
+#[es]
+#EsHost = "127.0.0.1"
+#EsPort = 9200
+#EsIndex = "mylog"
+#
+#[rabbitMq]
+#rabbitMQ = "amqp"
+#rabbitMQUser = "guest"
+#rabbitMQPassWord = "guest"
+#rabbitMQHost = "localhost"
+#rabbitMQPort = 5672
