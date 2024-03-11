@@ -12,13 +12,14 @@ type Conf struct {
 	//Oss           *Oss                    `toml:"oss"`
 	MySql *MySql `toml:"mysql"`
 	//Email         *Email                  `toml:"email"`
-	//Redis         *Redis                  `toml:"redis"`
+	Redis *Redis `toml:"redis"`
 	//EncryptSecret *EncryptSecret          `toml:"encryptSecret"`
 	//Cache         *Cache                  `toml:"cache"`
 	//KafKa         map[string]*KafkaConfig `toml:"kafka"`
 	//RabbitMq      *RabbitMq               `toml:"rabbitMq"`
 	//Es            *Es                     `toml:"es"`
 	PhotoPath *LocalPhotoPath `toml:"photoPath"`
+	Sms       *Sms            `toml:"sms"`
 }
 
 type System struct {
@@ -63,6 +64,7 @@ type Redis struct {
 	RedisPassword string `toml:"redisPwd"`
 	RedisDbName   int    `toml:"redisDbName"`
 	RedisNetwork  string `toml:"redisNetwork"`
+	RedisEmpires  int    `toml:"redisEmpires"`
 }
 
 type KafkaConfig struct {
@@ -89,12 +91,12 @@ type LocalPhotoPath struct {
 	AvatarPath  string `toml:"avatarPath"`
 }
 
-type Cache struct {
-	CacheType    string `toml:"cacheType"`
-	CacheExpires int64  `toml:"cacheExpires"`
-	CacheWarmUp  bool   `toml:"cacheWarmUp"`
-	CacheServer  string `toml:"cacheServer"`
-}
+//type Cache struct {
+//	CacheType    string `toml:"cacheType"`
+//	CacheExpires int64  `toml:"cacheExpires"`
+//	CacheWarmUp  bool   `toml:"cacheWarmUp"`
+//	CacheServer  string `toml:"cacheServer"`
+//}
 
 type Es struct {
 	EsHost  string `toml:"esHost"`
@@ -108,6 +110,12 @@ type RabbitMq struct {
 	RabbitMQPassWord string `toml:"rabbitMqPassWord"`
 	RabbitMQHost     string `toml:"rabbitMqHost"`
 	RabbitMQPort     string `toml:"rabbitMqPort"`
+}
+
+type Sms struct {
+	EndPoint        string `toml:"endPoint"`
+	AccessKeyId     string `toml:"accessKeyId"`
+	AccessKeySercet string `toml:"accessKeySercet"`
 }
 
 func Init() {
@@ -125,41 +133,3 @@ func Init() {
 		panic(err)
 	}
 }
-
-//func Init() {
-//	workDir, _ := os.Getwd()
-//	//workDir = filepath.Dir(workDir)
-//	file, err := ini.Load(workDir + "/config/config.toml")
-//	if err != nil {
-//		log.Println("failed to load the config,please check the path: ", err)
-//		panic(err)
-//	}
-//	loadServer(file)
-//	loadMysqlData(file)
-//	loadRedis(file)
-//}
-//
-//func loadServer(file *ini.File) {
-//	prefix := file.Section("service")
-//
-//	AppMode = prefix.Key("AppMode").String()
-//	HttpPort = prefix.Key("HttpPort").String()
-//}
-//func loadMysqlData(file *ini.File) {
-//	prefix := file.Section("mysql")
-//
-//	Db = prefix.Key("Db").String()
-//	DbHost = prefix.Key("DbHost").String()
-//	DbPort = prefix.Key("DbPort").String()
-//	DbUser = prefix.Key("DbUser").String()
-//	DbPassWord = prefix.Key("DbPassWord").String()
-//	DbName = prefix.Key("DbName").String()
-//}
-//
-//func loadRedis(file *ini.File) {
-//	prefix := file.Section("redis")
-//
-//	RedisAddr = prefix.Key("RedisAddr").String()
-//	RedisPw = prefix.Key("RedisPw").String()
-//	RedisDbName = prefix.Key("RedisDbName").String()
-//}

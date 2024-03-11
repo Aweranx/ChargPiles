@@ -6,6 +6,7 @@ import (
 	"ChargPiles/pkg/utils/ctl"
 	"ChargPiles/pkg/utils/jwt"
 	"ChargPiles/pkg/utils/log"
+	"ChargPiles/pkg/utils/sms"
 	"ChargPiles/pkg/utils/upload"
 	"ChargPiles/repository/db/dao"
 	"ChargPiles/repository/db/model"
@@ -31,7 +32,7 @@ func GetUserSrv() *UserSrv {
 
 func (s *UserSrv) UserRegister(ctx context.Context, req *types.UserRegisterReq) (resp interface{}, err error) {
 	userDao := dao.NewUserDao(ctx)
-	_, exist, err := userDao.ExistOrNotByUserName(req.UserName)
+	_, exist, err := userDao.ExistOrNotByPhone(req.PhoneNumber)
 	if err != nil {
 		//log.LogrusObj.Error(err)
 		return
@@ -40,8 +41,13 @@ func (s *UserSrv) UserRegister(ctx context.Context, req *types.UserRegisterReq) 
 		err = errors.New("用户已经存在了")
 		return
 	}
+	correct, str := sms.CheckCode(req.PhoneNumber, req.VerificationCode)
+	if correct == false {
+		err = errors.New(str)
+		return
+	}
 	user := &model.User{
-		UserName:    req.UserName,
+		//UserName:    req.UserName,
 		Password:    req.Password,
 		Email:       req.Email,
 		PhoneNumber: req.PhoneNumber,
@@ -52,10 +58,14 @@ func (s *UserSrv) UserRegister(ctx context.Context, req *types.UserRegisterReq) 
 	return
 }
 
+func (s *UserSrv) UserVerificationCode(ctx context.Context, req *types.UserVerificationCodeReq) {
+	sms.SendVerificationCode(req.PhoneNumber)
+}
+
 func (s *UserSrv) UserLogin(ctx context.Context, req *types.UserServiceReq) (resp interface{}, err error) {
 
 	userDao := dao.NewUserDao(ctx)
-	user, exist, err := userDao.ExistOrNotByUserName(req.UserName)
+	user, exist, err := userDao.ExistOrNotByPhone(req.PhoneNumber)
 	if !exist {
 		return nil, errors.New("用户不存在")
 	}
@@ -64,18 +74,18 @@ func (s *UserSrv) UserLogin(ctx context.Context, req *types.UserServiceReq) (res
 		return nil, errors.New("账号/密码不正确")
 	}
 
-	accessToken, refreshToken, err := jwt.GenerateToken(user.ID, req.UserName)
+	accessToken, refreshToken, err := jwt.GenerateToken(user.ID, req.PhoneNumber)
 	if err != nil {
 		return nil, err
 	}
 
 	userResp := &types.UserInfoResp{
-		ID:       user.ID,
-		UserName: user.UserName,
-		Email:    user.Email,
-		Status:   user.Status,
-		Avatar:   user.AvatarURL(),
-		CreateAt: user.CreatedAt.Unix(),
+		ID:          user.ID,
+		PhoneNumber: user.PhoneNumber,
+		Email:       user.Email,
+		Status:      user.Status,
+		Avatar:      user.AvatarURL(),
+		CreateAt:    user.CreatedAt.Unix(),
 	}
 
 	resp = &types.UserTokenData{
@@ -120,13 +130,13 @@ func (s *UserSrv) UserInfoShow(ctx context.Context, req *types.UserInfoShowReq) 
 		return
 	}
 	resp = &types.UserInfoResp{
-		ID:       user.ID,
-		UserName: user.UserName,
-		NickName: user.NickName,
-		Email:    user.Email,
-		Status:   user.Status,
-		Avatar:   user.AvatarURL(),
-		CreateAt: user.CreatedAt.Unix(),
+		ID:          user.ID,
+		PhoneNumber: user.PhoneNumber,
+		NickName:    user.NickName,
+		Email:       user.Email,
+		Status:      user.Status,
+		Avatar:      user.AvatarURL(),
+		CreateAt:    user.CreatedAt.Unix(),
 	}
 
 	return
@@ -148,7 +158,7 @@ func (s *UserSrv) UserAvatarUpload(ctx context.Context, file multipart.File, fil
 
 	var path string
 	if config.Config.System.UploadModel == consts.UploadModelLocal { // 兼容两种存储方式
-		path, err = upload.AvatarUploadToLocalStatic(file, uId, user.UserName)
+		path, err = upload.AvatarUploadToLocalStatic(file, uId, user.PhoneNumber)
 	} else {
 		path, err = upload.UploadToQiNiu(file, fileSize)
 	}

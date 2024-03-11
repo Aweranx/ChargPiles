@@ -17,6 +17,7 @@ func NewRouter() *gin.Engine {
 		})
 		user.POST("register", api.UserRegisterHandler())
 		user.POST("login", api.UserLoginHandler())
+		user.POST("verification_code", api.UserVerificationCodeHandler())
 
 		authed := user.Group("/")
 		authed.Use(middleware.AuthMiddleware())

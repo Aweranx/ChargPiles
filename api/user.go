@@ -29,6 +29,20 @@ func UserRegisterHandler() gin.HandlerFunc {
 
 }
 
+func UserVerificationCodeHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.UserVerificationCodeReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+
+		srv := service.GetUserSrv()
+		srv.UserVerificationCode(ctx.Request.Context(), &req)
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, nil))
+	}
+}
+
 func UserLoginHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req types.UserServiceReq

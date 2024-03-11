@@ -1,0 +1,10 @@
+# git
+.git/
+
+#IDEA
+
+.idea/
+
+#config
+
+config/config.toml
